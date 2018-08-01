@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <title>My first React Demo</title>
+    <!-- Add manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Tell the browser it's a PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Tell iOS it's a PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- icon for IOS -->
+    <link rel="apple-touch-icon" sizes="192x192" href="study-icon192.png">
+    <!-- Make sure theme-color is defined -->
+    <meta name="theme-color" content="#536878">
+</head>
+
+<body class="skin-blue sidebar-mini ">
+    <div id="root" style="height:100%">
+        <div class="App">
+            <div class="App-header">
+                <h2>Home</h2>
+            </div>
+
+            <p class="App-intro">
+              Loading site...
+            </p>
+        </div>
+    </div>
+
+    <script src="bundle.js"></script>
+    <script> // add service worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+            // Registration was successful
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+          }).catch(function(err) {
+            console.log(err)
+          });
+        });
+      } else {
+        console.log('service worker is not supported');
+      }
+    </script>
+
+    <script> // cell phone control
+        var touch_time;
+        document.addEventListener("touchstart", function (e) {
+            // prevent IOS double-click to zoom in 
+            if (new Date().getTime() - touch_time < 200) {
+                e.preventDefault();
+            }
+            touch_start = e.touches[0].clientY;
+            touch_time = new Date().getTime();
+        }, {passive: false})
+    </script>
+
+</body>
+
+</html>

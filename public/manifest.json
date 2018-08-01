@@ -1,0 +1,20 @@
+{
+    "short_name": "I Only Love Research",
+    "name": "Progressive Web App",
+    "icons": [
+      {
+        "src":"icon1024.png",
+        "sizes": "1024x1024",
+        "type": "image/png"
+      },
+      {
+        "src":"icon192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/?utm_source=homescreen",
+    "background_color": "#222",
+    "theme_color": "aliceblue",
+    "display": "standalone"
+  }
