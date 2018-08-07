@@ -1,7 +1,7 @@
 {
-  "name": "scratch",
+  "name": "ethereum-scratch",
   "version": "1.0.0",
-  "description": "paper daily check in system",
+  "description": "ethereum scratch website",
   "main": "app.js",
   "scripts": {
     "start": "node server/index.js",
@@ -9,20 +9,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JackLLLLL/paper-daily.git"
+    "url": "git+https://github.com/JackLLLLL/Ethereum-scratch.git"
   },
   "keywords": [
-    "koa",
-    "react",
-    "ywa",
-    "nedb"
+    "ethereum"
   ],
   "author": "JackLLLLL",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JackLLLLL/paper-daily/issues"
+    "url": "https://github.com/JackLLLLL/Ethereum-scratch/issues"
   },
-  "homepage": "https://github.com/JackLLLLL/paper-daily#readme",
+  "homepage": "https://github.com/JackLLLLL/Ethereum-scratch#readme",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
