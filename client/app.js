@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Web3 from "web3"
+import Tx from "ethereumjs-tx";
 import 'antd/dist/antd.css';
 import './app.css'
+import config from "../eth/eth_config"
 
 import { Timeline, Icon, Avatar, Badge, Button } from 'antd';
 
@@ -27,6 +30,105 @@ class App extends React.Component {
     //     this.setState({loading: false});
     // }
 
+    async getPrizeFromEth(tokenId) {
+        var abi = JSON.parse(config.CONTRACT_ABI);
+        var contract_address = config.CONTRACT_ADDRESS;
+        var from_address = config.FROM_ADDRESS;
+        var web_privatekey = config.WEB_PRIVATEKEY;
+
+        console.log("input parameters is "  + tokenId)
+        console.log(contract_address)
+        console.log(from_address)
+        console.log(web_privatekey)
+
+        let web3;
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider, infura
+            web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/cLuV2VMPUEHUVLATbUfK"));
+        }
+
+        // This code was written and tested using web3 version 1.0.0-beta.35, but appears to be 0.20, haven't figure out why, so using 0.20 grammer in following
+        console.log(`web3 version: ${web3.version}`)
+        // console.log(`web3 version: ${web3.version.api}`)
+
+        // Determine the nonce
+        var count = await web3.eth.getTransactionCount(from_address);
+        console.log(`transactions so far: ${count}`);
+
+        // This is the address of the contract
+        var contract = new web3.eth.Contract(abi, contract_address, { from: from_address });
+        // var contract = web3.eth.contract(abi);
+        // var contract_instance = contract.at(contract_address);
+
+        // check the balance
+        var balance = await web3.eth.getBalance(from_address);
+        console.log(`Ether Balance before send: ${balance} Wei`);
+
+        // default chainId
+        var id =  await web3.eth.net.getId();
+        // var id = await web3.version.network;
+        console.log(`chainId: ${id}`)
+
+        // esimate gas price
+        var gasPrice = await web3.eth.getGasPrice();
+        // var gasPrice = await web3.eth.gasPrice;
+        console.log(`gas price: ${gasPrice}`)
+
+        // esimate gas consume
+        var gasConsume = await web3.eth.estimateGas({
+            from: from_address,
+            to: contract_address,
+            data: contract.methods.prizeOf(tokenId).encodeABI()
+        }) * 2
+        console.log(`gas consume: ${gasConsume}`)
+        console.log(`total: ${gasPrice*gasConsume}`)
+
+        // call
+        var receipt = await contract.methods.prizeOf(tokenId).call({from: from_address, gasPrice: gasPrice, gas:gasConsume});
+
+        console.log(`Receipt info:  ${JSON.stringify(receipt, null, '\t')}`)
+
+        // The balance may not be updated yet, but let's check
+        balance = await web3.eth.getBalance(from_address);
+        console.log(`Ether Balance after send: ${balance} Wei`);
+
+        // // create raw transaction
+        // var rawTransaction = {
+        //     "from": from_address,
+        //     "nonce": "0x" + count.toString(16),
+        //     "gasPrice": web3.utils.toHex(gasPrice),
+        //     "gasLimit": web3.utils.toHex(gasConsume),
+        //     "to": contract_address,
+        //     "value": "0x0",
+        //     "data": contract.methods.prizeOf(tokenId).encodeABI(),
+        //     "chainId": id
+        // };
+
+        // console.log(rawTransaction)
+        // console.log(`total: ${gasPrice*gasConsume}`)
+        // // The private key must be for from_address
+        // var privateKey = new Buffer(web_privatekey, 'hex');
+        // var tx = new Tx(rawTransaction);
+        // // sign the transaction
+        // tx.sign(privateKey);
+        // var serializedTx = tx.serialize();
+
+        // // send the transaction
+        // console.log(`Attempting to send signed tx:  ${serializedTx.toString('hex')}`);
+        // var receipt = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+        // console.log(`Receipt info:  ${JSON.stringify(receipt, null, '\t')}`);
+
+        // // The balance may not be updated yet, but let's check
+        // balance = await contract.methods.balanceOf(from_address).call();
+        // console.log(`JackCoin Balance after send: ${balance}`);
+        // balance = await web3.eth.getBalance(from_address);
+        // console.log(`Ether Balance after send: ${balance} Wei`);
+        
+        return receipt
+    }
+
     async componentDidMount() {
         console.log("component mounted")
 
@@ -43,7 +145,7 @@ class App extends React.Component {
         var img = new Image();
         // TODO: need to get random number from Ethereum
         var imgs = ['images/0.jpg','images/1.jpg','images/2.jpg'];
-        var random_num = Math.floor(Math.random()*3);
+        var random_num = await this.getPrizeFromEth(0);
         img.src = imgs[random_num];
 
         img.addEventListener('load', function(e) {

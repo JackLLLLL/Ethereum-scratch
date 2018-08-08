@@ -327,6 +327,11 @@ contract ScratchMain is ScratchBase, ERC721 {
         return sold;
     }
 
+    /// @dev get prize value on scratch card given id
+    function prizeOf(uint256 _tokenId) external view returns (uint16) {
+        return scratches[_tokenId].prizeValue;
+    }
+
     /// @dev buy one card
     function buyScratch() external payable whenNotPaused returns (uint256) {
         // Avoid strange things happen
